@@ -4,7 +4,7 @@
 ## Objective
 The course objective for this project is to "to build a connected sensor unit that provides a measured value that is presented over the internet". In addition that I added some personal objectives, namely learning how to use Python and getting familiar with GitHub. I also wanted to keep the project cheap and simple.
 
-I already have a "smart home" with many sensors handled by HomeAssistant. Hence I did have some problems determining what kind of project to do. Finally I decided to try to measure air flow direction using two temperature sensors. My apartment built in 1949 has a passive ventilation system which does not always work as intended. Sometimes the system sucks cold air into the apartment instead of the opposite. In wintertime (when this is an actual problem) the air is very cold. My idea is to measure the incoming/outgoing temperature and compare it to a temperature inside the room. If the difference is "large" I can conclude that the air is flowing in the wrong direction. 
+I already have a "smart home" with many sensors handled by HomeAssistant. Hence I did have some problems determining what kind of project to do. Finally I decided to try to measure air flow direction using two temperature sensors. My apartment built in 1949 has a passive ventilation system which does not always work as intended. Sometimes the system sucks cold air *into* the apartment instead of the opposite. In wintertime (when this is an actual problem) the air is very cold. My idea is to measure the incoming/outgoing temperature and compare it to a temperature inside the room. If the difference is "large" I can conclude that the air is flowing in the wrong direction. 
 
 I decided to use Wi-Fi to communicate with the device (since it will be located in my home) and I also decided to use the MQTT protocol to transfer measurement data since that amount of data sent from the device will be low.
 
@@ -29,16 +29,16 @@ When developing software on my Macbook Pro for my Lopy4 I needed an *Integrated 
 
 To install Atom and the plugin use these [instructions](https://docs.pycom.io/gettingstarted/software/atom/).
 
-Now the host is setup for development and it is a good idea to update the firmware (FW) of the target. Note that there are two firmwares to be updated, the FW on the Lopy4 and the FW on the expansion board.
+Now the host is setup for development and it is a good idea to update the firmware (FW) of the target. Note that there are two FWs to be updated, the FW on the Lopy4 and the FW on the expansion board.
 
 To update the FW on the Lopy4 please follow these [instructions](https://docs.pycom.io/updatefirmware/device/).
 
 When that is done update the FW on the expansion board with these [instructions](https://docs.pycom.io/updatefirmware/expansionboard/).
 
-The second update is a little bit more complicated than the first one. First you need to make sure that you know the version of your expansion board and then you need to download a specific tool (`DFU-Util`) to your computer to do the update. Since I am running on MacOS I used Homebrew to install it and everything went smoothly.
+The second update is a little bit more complicated. First you need to make sure that you know the version of your expansion board and then you need to download a specific tool (`DFU-Util`) to your computer to do the update. Since I am running on MacOS I used `Homebrew` to install it and everything went smoothly.
 
 ## Putting everything together
-After fitting the PyCom onto the expansion board the temperature sensors were added to the breadboard. Use the power from the expansion board the power them. See the picture below for proper wiring:
+After fitting the Lopy4 onto the expansion board the temperature sensors were added to the breadboard. I used the power from the expansion board the power them. See the picture below for proper wiring:
 
 ![](https://i.imgur.com/WSPr37n.png)
 
@@ -59,13 +59,13 @@ In the data sheet for the [MCP9700 sensor]( http://ww1.microchip.com/downloads/e
 Finally the device needs to get connected to the Wi-Fi in order to deliver measurements. This is done during the boot phase, see the `boot.py` file below.
 
 ## Platform
-Once the device starts to collect data, the data needs to be stored and visualised somewhere. There are a number of more or less free cloud services that can provide this "out there". I decided to choose Ubidots STEM which is free to use. It includes a MQTT broker, a database (where data is stored for a limited time) and it includes a web interface to visualise data. There are some [limitations](https://help.ubidots.com/en/articles/639806-what-is-the-difference-between-ubidots-and-ubidots-stem) on how much data you can upload, but for this project that is not an issue.
+Once the device starts to collect data, the data needs to be stored and visualised somewhere. There are a number of more or less free cloud services that can provide this "out there". I decided to choose Ubidots STEM which is free to use. It includes a MQTT broker, a database (where data is stored for a limited time) and it includes a web interface to visualise data. There are some [limitations](https://help.ubidots.com/en/articles/639806-what-is-the-difference-between-ubidots-and-ubidots-stem) on (for example) how much data you can upload, but for this project that is not an issue.
 
 Create an STEM account at [Ubidots](https://stem.ubidots.com) and you are ready to go! 
 
 Ubidots uses a simple data structure where each device can have a number *variables* or time series connected to them. Once that data is uploaded to Ubidots there is a *dashboard* that you can use to visualise the data from your device. That is done by adding *widgets* of wanted type, for example a line graph.
 
-Ubidots also provides something they call *syntetic variables* which is really that you can do some kind of processing/calculation on the uploaded data. I intended to use this feature to estimate the air flow direction (*cloud computing*). 
+Ubidots also provides something they call *syntetic variables* which is really that you can do some kind of processing/calculation on the uploaded data. My intention was to use this feature to estimate the air flow direction (*cloud computing*). 
 
 Via MQTT you are able to subscribe to a syntetic variable. Each time a syntetic variable is updated, you get an update. Please note that it can take quit some time for Ubidots to update its syntetic variables. My impression when testing it was that you can expect new values every 4-5 minutes.
 
@@ -75,7 +75,7 @@ In order to get access to the MQTT broker you need to have a *token*. This token
 ## The Code
 The Lopy4 includes a flash file system where you store your Python-files. The Lopy4 device supports a sub-set of Python well suited for embedded systems.
 
-When the Lopy4 is started up if looks for a file named`boot.py` and it runs it. Then the `main.py` file is next in turn to be run. There is also a folder named `/lib` where all libraries should be put for Python to find them.
+When the Lopy4 is started up if looks for a file named`boot.py` and it runs it. Then the `main.py` file is next in turn to be run. There is also a folder named `/lib` where all libraries shall be put for Python to find them.
 
 All my source code can be found at [GitHub](https://github.com/michaelrosenberg300/1DT305).
 
@@ -121,7 +121,7 @@ time.timezone(2*60**2)                      # Set timezone GMT+2
 print("Current time:", time.localtime())
 ```
 
-As previously mentioned I wanted to learn Python when doing this course. Therefore the implementation is probably a bit overkill. I decided to do a simple object oriented abstraction of the sensors. The result was support for one physical sensor, the MCP9700, and one "virtual" sensor, the air flow estimator. 
+As previously mentioned I wanted to learn Python when doing this course. Therefore the implementation is probably a bit overkill. I decided to do a simple object oriented abstraction of the sensors. The result was support for one physical sensor, the MCP9700, and one "virtual" sensor, the air flow direction estimator. 
 
 The base sensor class also calculates things like max/min and average values which (of course) could be done in the cloud instead. 
 
@@ -261,22 +261,22 @@ All data is stored in in Ubidots database (given the limitations already describ
 
 In my case `MY_DEVICE = AirFlowMeter` and the 4 measurements are denoted `MEASUREMENT = {"Room_Temperature", "Air_Temperature", "T_delta", "T_deltaAvg"}`. The data uploaded is found with the same names in Ubidots:
 
-![](https://i.imgur.com/QmQt6dE.png)*Screenshot from Ubidots showing the variables.*
+![](https://i.imgur.com/QmQt6dE.png)*Screenshot from Ubidots showing my "airflowmeter"-device with the 4 variables.*
 
 
-The MQTT protocol includes a *Quality of Service (QoS)* parameter which sets the "amition level" when sending data. I used `QoS = 0` which means that the data is sent but my Lopy4 will not know if Ubidots received the data or not. This is the most efficient way to send data and since the data rate is "high" anyhow it should not be a problem if single data readings are lost sometimes.
+The MQTT protocol includes a *Quality of Service (QoS)* parameter which sets the "amition level" when sending data. I used `QoS = 0` which means that the data is sent but my Lopy4 will not know if Ubidots received the data or not. This is the most efficient way to send data and since the data rate is "high" anyhow, it should not be a problem if single data readings are lost sometimes.
 
 ## Presenting the data
-The data is presented in two ways. The first one is that the PyCom device uses its LED with `Green` = "Outgoing airflow" and `Red` = "Incoming or uncertain airflow" to show the estimated airflow direction, *which was the objective of this project!* Please note that I have added some hysteresis (in software) so the LED can only change color every 10th minute.
+The data is presented in two ways. The first one is that the PyCom device uses its LED with `Green` = "Outgoing airflow" and `Red` = "Incoming or uncertain airflow" to show the estimated airflow direction. I have added some hysteresis (in software) so the LED can only change color every 10th minute.
 
-The second presentation is done via Ubidots. Below is a screen dump that shows how temperature from the two sensors are presented. The idea was to use a syntetic variable to calculate the air flow direction estimate but  
-that functionality was not included in the free version of Ubidots. Instead I found an *indicator* widget that will turn green when the air flow is outgoing and turn red when the air flow is incoming. 
+The second presentation is done via Ubidots. Below is a screen dump that shows how temperature from the two sensors are presented. The idea was to use a syntetic variable to calculate the air flow direction estimate but that functionality was not included in the free version of Ubidots. Instead I found an *indicator* widget that will turn green when the air flow is outgoing and turn red when the air flow is incoming. 
 
 ![](https://i.imgur.com/YP7lBsg.png)*Ubidots dashboard with the published data*
 
+In the top graph the two temperature measurements are shown and in the lower graph the temperature difference and the *averaged* temperature difference is shown. The data in the lower graph could of course be calculated by Ubidots (based on the data in the upper graph), but since my Lopy4 devices needs that data anyhow to do the estimation of airflow direction, all calculations are done in the Lopy4 device.
 
 ## Finalizing the design
-I am happy with this first prototype and I am looking forward to try it out more in the winter time. 
+I am happy with this first prototype and I am looking forward to try it out more in the wintertime. 
 
 ![](https://i.imgur.com/Yw7pVhC.jpg)*The resulting prototype with both the LED- and the Ubidots airflow direction indicator.*
 
@@ -287,5 +287,6 @@ Thinking of what could be done different/better, I come up with the following:
 * Add a notification to the user (e-mail, text message, ...) when the airflow changes direction.
 * Extend the Python classes to include more sensor, including digital sensors. Maybe a humidity sensor could help making a better air flow direction estimate?
 * Add more error handling (at least recover from lost Wi-Fi)
+* Internal data buffer in the Lopy4 device to store data if connection to the cloud is lost. Then the data can be sent when the connection is restabished
 * Support individual measurement rates for each sensor
 * Have a paid Ubidots account (or similar) that supports more cloud computing so that a better estimate of the air flow direction could be done in the cloud. 
