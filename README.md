@@ -8,7 +8,7 @@ I already have a "smart home" with many sensors handled by HomeAssistant. Hence 
 
 I decided to use Wi-Fi to communicate with the device (since it will be located in my home) and I also decided to use the MQTT protocol to transfer measurement data since that amount of data sent from the device will be low.
 
-**Time estimate:** 60 hours including setting up electronics, installing IDE, develop the source code for the Lopy4 device, create data presentation and to test everything.
+**Time estimate to setup my project:** 20 hours including setting up electronics, installing IDE, downloading my source code from GitHub for the Lopy4 device and to create the data presentation.
 ## Material
 The material I used was the [basic IoT bundle kit from Electrokit](https://www.electrokit.com/produkt/lnu-1dt305-tillampad-iot-lopy4-basic-bundle/). From that bunde I more specifically used:
 
@@ -264,7 +264,7 @@ In my case `MY_DEVICE = AirFlowMeter` and the 4 measurements are denoted `MEASUR
 ![](https://i.imgur.com/QmQt6dE.png)*Screenshot from Ubidots showing my "airflowmeter"-device with the 4 variables.*
 
 
-The MQTT protocol includes a *Quality of Service (QoS)* parameter which sets the "amition level" when sending data. I used `QoS = 0` which means that the data is sent but my Lopy4 will not know if Ubidots received the data or not. This is the most efficient way to send data and since the data rate is "high" anyhow, it should not be a problem if single data readings are lost sometimes.
+The MQTT protocol includes a *Quality of Service (QoS)* parameter which sets the "ambition level" when sending data. I used `QoS = 0` which means that the data is sent but my Lopy4 will not know if Ubidots received the data or not. This is the most efficient way to send data and since the data rate is "high" anyhow, it should not be a problem if single data readings are lost sometimes.
 
 ## Presenting the data
 The data is presented in two ways. The first one is that the PyCom device uses its LED with `Green` = "Outgoing airflow" and `Red` = "Incoming or uncertain airflow" to show the estimated airflow direction. I have added some hysteresis (in software) so the LED can only change color every 10th minute.
